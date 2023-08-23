@@ -16,4 +16,9 @@ private:
     vk::UniqueDevice     m_logicalDevice;
     vk::Queue            m_queue;
     vk::SwapchainKHR     m_swapchain;
+
+    // Device and presentation setup
+    void selectPhysicalDevice();
+    void createLogicalDevice();
+    void createSwapchain(vk::Extent2D imageExtent);
 };
