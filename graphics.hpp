@@ -6,7 +6,7 @@
 
 class Graphics {
 public:
-    Graphics(glfw::Window &window);
+    explicit Graphics(glfw::Window &window);
 private:
     vk::UniqueInstance   m_instance;
     vk::UniqueSurfaceKHR m_surface;
