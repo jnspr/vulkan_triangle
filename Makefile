@@ -7,9 +7,12 @@ OBJS = $(SRCS:.cpp=.o)
 # Compiler settings
 CFLAGS += -Ofast
 
-# Dependencies
+# Dependencies via pkg-config
 CFLAGS += $(shell pkg-config $(PKGS) --cflags)
 LIBS += $(shell pkg-config $(PKGS) --libs)
+
+# Dependencies via submodules
+CFLAGS += -I external/glfwpp/include
 
 # Rule for building all components
 all: $(NAME)
