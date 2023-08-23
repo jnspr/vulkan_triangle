@@ -1,5 +1,7 @@
 #pragma once
 
+#include "graphics.hpp"
+
 #include <utility>
 #include <glfwpp/glfwpp.h>
 
@@ -11,4 +13,5 @@ public:
 private:
     glfw::GlfwLibrary m_glfw;
     glfw::Window      m_window;
+    Graphics          m_graphics;
 };
