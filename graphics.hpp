@@ -55,4 +55,5 @@ private:
     // Rendering setup
     void createShaders();
     void initViewportAndScissor();
+    void createGraphicsPipeline();
 };
