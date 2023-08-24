@@ -10,6 +10,7 @@ Application::Application():
 void Application::runUntilClose() {
     while (!m_window.shouldClose()) {
         glfw::pollEvents();
+        m_graphics.renderFrame();
     }
 }
 
