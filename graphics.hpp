@@ -30,6 +30,7 @@ private:
     std::vector<vk::UniqueFramebuffer> m_framebuffers;
 
     // Preparation
+    void createInstanceAndSurface();
     static SpirvCode loadAndCompileShader(shaderc::Compiler &compiler, shaderc_shader_kind kind, const char *path);
     void loadAndCompileShaders();
 
