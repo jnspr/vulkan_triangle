@@ -16,6 +16,9 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     createRenderPass();
     createImageViews();
     createFramebuffers();
+
+    // Rendering setup
+    createShaders();
 }
 
 Graphics::~Graphics() {
@@ -262,4 +265,26 @@ void Graphics::createFramebuffers() {
             m_logicalDevice->createFramebufferUnique(createInfo.setPAttachments(&imageView.get()))
         );
     }
+}
+
+void Graphics::createShaders() {
+    // Create modules from the SPIR-V shaders
+    m_shaderModules[0] = m_logicalDevice->createShaderModuleUnique(
+        vk::ShaderModuleCreateInfo()
+            .setCode(m_vertexShaderCode)
+    );
+    m_shaderModules[1] = m_logicalDevice->createShaderModuleUnique(
+        vk::ShaderModuleCreateInfo()
+            .setCode(m_fragmentShaderCode)
+    );
+
+    // Populate the shader stage creation infos for later use
+    m_shaderStages[0] = vk::PipelineShaderStageCreateInfo()
+        .setStage(vk::ShaderStageFlagBits::eVertex)
+        .setModule(*m_shaderModules[0])
+        .setPName("main");
+    m_shaderStages[1] = vk::PipelineShaderStageCreateInfo()
+        .setStage(vk::ShaderStageFlagBits::eFragment)
+        .setModule(*m_shaderModules[0])
+        .setPName("main");
 }
