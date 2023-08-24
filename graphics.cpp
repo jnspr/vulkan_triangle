@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-Graphics::Graphics(glfw::Window &window): m_queueFamilyIndex(0xffffffff) {
+Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0xffffffff) {
     // Create instance with extensions for presenting to window surface
     auto extensions = glfw::getRequiredInstanceExtensions();
     m_instance = vk::createInstanceUnique(
