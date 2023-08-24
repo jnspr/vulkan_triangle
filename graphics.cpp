@@ -409,3 +409,36 @@ void Graphics::createCommandBuffer() {
         throw std::runtime_error("Unable to allocate command buffer");
     m_commandBuffer = std::move(commandBuffers[0]);
 }
+
+void Graphics::recordCommandBuffer(uint32_t imageIndex) {
+    // Reset the buffer and start recording
+    m_commandBuffer->reset();
+    m_commandBuffer->begin(vk::CommandBufferBeginInfo());
+
+    // Start the render pass with a solid black clear color
+    auto clearValue = vk::ClearValue()
+        .setColor({0.0f, 0.0f, 0.0f, 1.0f});
+    m_commandBuffer->beginRenderPass(
+        vk::RenderPassBeginInfo()
+            .setRenderPass(*m_renderPass)
+            .setFramebuffer(*m_framebuffers[imageIndex])
+            .setRenderArea(m_scissor)
+            .setPClearValues(&clearValue)
+            .setClearValueCount(1),
+        vk::SubpassContents::eInline
+    );
+
+    // Bind the graphics pipeline
+    m_commandBuffer->bindPipeline(vk::PipelineBindPoint::eGraphics, *m_graphicsPipeline);
+
+    // Set viewport and scissor
+    m_commandBuffer->setViewport(0, 1, &m_viewport);
+    m_commandBuffer->setScissor(0, 1, &m_scissor);
+
+    // Draw the triangle
+    m_commandBuffer->draw(3, 1, 0, 0);
+
+    // End the render pass and recording
+    m_commandBuffer->endRenderPass();
+    m_commandBuffer->end();
+}
