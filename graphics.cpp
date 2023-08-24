@@ -139,12 +139,23 @@ void Graphics::createRenderPass() {
         .setPColorAttachments(&colorReference)
         .setColorAttachmentCount(1);
 
+    // Define a dependency for image acquisition before the render pass is started
+    auto dependency = vk::SubpassDependency()
+        .setSrcSubpass(VK_SUBPASS_EXTERNAL)
+        .setDstSubpass(0)
+        .setSrcStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput)
+        .setSrcAccessMask(vk::AccessFlagBits::eNone)
+        .setDstStageMask(vk::PipelineStageFlagBits::eColorAttachmentOutput)
+        .setDstAccessMask(vk::AccessFlagBits::eNone);
+
     m_renderPass = m_logicalDevice->createRenderPassUnique(
         vk::RenderPassCreateInfo()
             .setPAttachments(&colorDescription)
             .setAttachmentCount(1)
             .setPSubpasses(&subpass)
             .setSubpassCount(1)
+            .setPDependencies(&dependency)
+            .setDependencyCount(1)
     );
 }
 
