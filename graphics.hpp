@@ -68,4 +68,14 @@ private:
 
     // Rendering
     void recordCommandBuffer(uint32_t imageIndex);
+
+    // Callback for debug messages
+#ifdef ENABLE_VALIDATION
+    static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+        VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
+        VkDebugUtilsMessageTypeFlagsEXT             messageType,
+        const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+        void                                       *pUserData
+    );
+#endif
 };
