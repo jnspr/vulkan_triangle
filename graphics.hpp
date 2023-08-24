@@ -20,11 +20,13 @@ private:
     vk::Queue                        m_queue;
     vk::Extent2D                     m_imageExtent;
     vk::UniqueSwapchainKHR           m_swapchain;
+    vk::UniqueRenderPass             m_renderPass;
     std::vector<vk::UniqueImageView> m_imageViews;
 
     // Device and presentation setup
     void selectPhysicalDevice();
     void createLogicalDevice();
     void createSwapchain();
+    void createRenderPass();
     void createImageViews();
 };
