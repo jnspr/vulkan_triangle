@@ -17,6 +17,10 @@ public:
 private:
     glfw::Window                      &m_window;
     vk::UniqueInstance                 m_instance;
+#ifdef ENABLE_VALIDATION
+    vk::DispatchLoaderDynamic                                               m_dispatch;
+    vk::UniqueHandle<vk::DebugUtilsMessengerEXT, vk::DispatchLoaderDynamic> m_messenger;
+#endif
     vk::UniqueSurfaceKHR               m_surface;
     SpirvCode                          m_vertexShaderCode;
     SpirvCode                          m_fragmentShaderCode;
