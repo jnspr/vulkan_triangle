@@ -40,6 +40,7 @@ private:
     // Device and presentation setup
     void selectPhysicalDevice();
     void createLogicalDevice();
+    void createRenderSync();
     void createSwapchain();
     void createRenderPass();
     void createImageViews();
