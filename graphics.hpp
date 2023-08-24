@@ -47,4 +47,7 @@ private:
     void createRenderPass();
     void createImageViews();
     void createFramebuffers();
+
+    // Rendering setup
+    void createShaders();
 };
