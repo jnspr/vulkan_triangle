@@ -5,7 +5,7 @@ HDRS = $(wildcard *.hpp)
 OBJS = $(SRCS:.cpp=.o)
 
 # Compiler settings
-CFLAGS += -Ofast -DGLFW_INCLUDE_NONE
+CFLAGS += -Ofast -DGLFW_INCLUDE_NONE -g
 
 # Dependencies via pkg-config
 CFLAGS += $(shell pkg-config $(PKGS) --cflags)
