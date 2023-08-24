@@ -20,6 +20,10 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     createImageViews();
 }
 
+Graphics::~Graphics() {
+    m_logicalDevice->waitIdle();
+}
+
 void Graphics::selectPhysicalDevice() {
     for (auto device : m_instance->enumeratePhysicalDevices()) {
         // Only use non-CPU devices
