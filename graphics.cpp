@@ -91,7 +91,7 @@ void Graphics::createSwapchain(vk::Extent2D imageExtent) {
     if (capabilities.maxImageCount != 0 && minImageCount > capabilities.maxImageCount)
         minImageCount = capabilities.maxImageCount;
 
-    m_swapchain = m_logicalDevice->createSwapchainKHR(
+    m_swapchain = m_logicalDevice->createSwapchainKHRUnique(
         vk::SwapchainCreateInfoKHR()
             // Present to `m_surface` using a FIFO
             .setSurface(*m_surface)
