@@ -8,6 +8,7 @@
 class Graphics {
 public:
     explicit Graphics(glfw::Window &window);
+    ~Graphics();
 private:
     glfw::Window                    &m_window;
     vk::UniqueInstance               m_instance;
