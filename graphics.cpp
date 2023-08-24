@@ -19,6 +19,7 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
 
     // Rendering setup
     createShaders();
+    initViewportAndScissor();
 }
 
 Graphics::~Graphics() {
@@ -287,4 +288,17 @@ void Graphics::createShaders() {
         .setStage(vk::ShaderStageFlagBits::eFragment)
         .setModule(*m_shaderModules[0])
         .setPName("main");
+}
+
+void Graphics::initViewportAndScissor() {
+    m_viewport = vk::Viewport()
+        .setX(0.0)
+        .setY(0.0)
+        .setWidth(static_cast<float>(m_imageExtent.width))
+        .setHeight(static_cast<float>(m_imageExtent.height))
+        .setMinDepth(0.0)
+        .setMaxDepth(1.0);
+    m_scissor = vk::Rect2D()
+        .setOffset({0, 0})
+        .setExtent(m_imageExtent);
 }
