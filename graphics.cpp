@@ -18,6 +18,7 @@ Graphics::Graphics(glfw::Window &window): m_queueFamilyIndex(0xffffffff) {
     selectPhysicalDevice();
     createLogicalDevice();
     createSwapchain(vk::Extent2D(std::get<0>(size), std::get<1>(size)));
+    createImageViews();
 }
 
 void Graphics::selectPhysicalDevice() {
@@ -107,4 +108,30 @@ void Graphics::createSwapchain(vk::Extent2D imageExtent) {
             .setImageArrayLayers(1)
             .setMinImageCount(minImageCount)
     );
+}
+
+void Graphics::createImageViews() {
+    // Define a view of an image's color attachment
+    auto createInfo = vk::ImageViewCreateInfo()
+        .setViewType(vk::ImageViewType::e2D)
+        .setSubresourceRange(
+            vk::ImageSubresourceRange()
+                .setAspectMask(vk::ImageAspectFlagBits::eColor)
+                .setBaseMipLevel(0)
+                .setLevelCount(1)
+                .setBaseArrayLayer(0)
+                .setLayerCount(1)
+        );
+
+    // Destroy existing image views and reserve space for each new view handle
+    auto images = m_logicalDevice->getSwapchainImagesKHR(*m_swapchain);
+    m_imageViews.clear();
+    m_imageViews.reserve(images.size());
+
+    // Create a view for each image in the swapchain
+    for (auto image : images) {
+        m_imageViews.push_back(
+            m_logicalDevice->createImageViewUnique(createInfo.setImage(image))
+        );
+    }
 }
