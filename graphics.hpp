@@ -4,6 +4,9 @@
 #include <utility>
 #include <vulkan/vulkan.hpp>
 #include <glfwpp/glfwpp.h>
+#include <shaderc/shaderc.hpp>
+
+using SpirvCode = std::vector<uint32_t>;
 
 class Graphics {
 public:
@@ -13,6 +16,8 @@ private:
     glfw::Window                      &m_window;
     vk::UniqueInstance                 m_instance;
     vk::UniqueSurfaceKHR               m_surface;
+    SpirvCode                          m_vertexShaderCode;
+    SpirvCode                          m_fragmentShaderCode;
     vk::PhysicalDevice                 m_physicalDevice;
     vk::SurfaceFormatKHR               m_surfaceFormat;
     uint32_t                           m_queueFamilyIndex;
@@ -23,6 +28,10 @@ private:
     vk::UniqueRenderPass               m_renderPass;
     std::vector<vk::UniqueImageView>   m_imageViews;
     std::vector<vk::UniqueFramebuffer> m_framebuffers;
+
+    // Preparation
+    static SpirvCode loadAndCompileShader(shaderc::Compiler &compiler, shaderc_shader_kind kind, const char *path);
+    void loadAndCompileShaders();
 
     // Device and presentation setup
     void selectPhysicalDevice();
