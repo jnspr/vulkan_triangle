@@ -9,6 +9,7 @@ class Graphics {
 public:
     explicit Graphics(glfw::Window &window);
 private:
+    glfw::Window                    &m_window;
     vk::UniqueInstance               m_instance;
     vk::UniqueSurfaceKHR             m_surface;
     vk::PhysicalDevice               m_physicalDevice;
