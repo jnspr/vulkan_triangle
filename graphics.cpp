@@ -11,6 +11,7 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     // Setup devices and presentation
     selectPhysicalDevice();
     createLogicalDevice();
+    createRenderSync();
     createSwapchain();
     createRenderPass();
     createImageViews();
@@ -124,6 +125,21 @@ void Graphics::createLogicalDevice() {
 
     // Obtain the created queue's handle
     m_queue = m_logicalDevice->getQueue(m_queueFamilyIndex, 0);
+}
+
+void Graphics::createRenderSync() {
+    // Create a fence which prevents the render loop from acquiring the next image until the current image is rendered,
+    // it is initialized to be in signalled state so the first render can occur
+    m_nextFrameFence = m_logicalDevice->createFenceUnique(
+        vk::FenceCreateInfo()
+            .setFlags(vk::FenceCreateFlagBits::eSignaled)
+    );
+
+    // Create a semaphore which signals the graphics pipeline that an image is ready to be drawn on
+    m_imageAcquireSema = m_logicalDevice->createSemaphoreUnique(vk::SemaphoreCreateInfo());
+
+    // Create a semaphore which signals the swapchain that rendering has finished and the image can be presented
+    m_renderFinishSema = m_logicalDevice->createSemaphoreUnique(vk::SemaphoreCreateInfo());
 }
 
 void Graphics::createSwapchain() {
