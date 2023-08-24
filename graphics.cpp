@@ -1,5 +1,6 @@
 #include "graphics.hpp"
 
+#include <fstream>
 #include <stdexcept>
 
 Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0xffffffff) {
@@ -13,6 +14,8 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     // Create surface for presenting
     m_surface = vk::UniqueSurfaceKHR(window.createSurface(*m_instance), *m_instance);
 
+    loadAndCompileShaders();
+
     // Setup devices and presentation
     selectPhysicalDevice();
     createLogicalDevice();
@@ -25,6 +28,43 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
 Graphics::~Graphics() {
     if (m_logicalDevice)
         m_logicalDevice->waitIdle();
+}
+
+SpirvCode Graphics::loadAndCompileShader(shaderc::Compiler &compiler, shaderc_shader_kind kind, const char *path) {
+    std::vector<char> glslSource;
+    {
+        // Open the file as a stream and seek to its end
+        std::ifstream stream(path, std::ios::ate | std::ios::binary);
+        if (!stream.is_open())
+            throw std::runtime_error("Unable to open shader source");
+
+        // Use the end position as the buffer length and seek back to the start
+        auto length = stream.tellg();
+        stream.seekg(0);
+        glslSource.resize(static_cast<size_t>(length));
+
+        // Read the file into the buffer
+        stream.read(glslSource.data(), length);
+        if (!stream.good())
+            throw std::runtime_error("Unable to read shader source");
+    }
+
+    // Compile the GLSL shader to SPIR-V and optimize for performance
+    auto options = shaderc::CompileOptions();
+    options.SetOptimizationLevel(shaderc_optimization_level_performance);
+    auto result = compiler.CompileGlslToSpv(glslSource.data(), glslSource.size(), kind, "glsl_shader", "main", options);
+
+    // Check for errors and return the SPIR-V code if successful
+    if (result.GetCompilationStatus() != shaderc_compilation_status_success)
+        throw std::runtime_error("Unable to compile shader: " + result.GetErrorMessage());
+    return SpirvCode(result.cbegin(), result.cend());
+}
+
+void Graphics::loadAndCompileShaders() {
+    auto compiler = shaderc::Compiler();
+
+    m_vertexShaderCode = loadAndCompileShader(compiler, shaderc_vertex_shader, "triangle.vert");
+    m_fragmentShaderCode = loadAndCompileShader(compiler, shaderc_fragment_shader, "triangle.frag");
 }
 
 void Graphics::selectPhysicalDevice() {
