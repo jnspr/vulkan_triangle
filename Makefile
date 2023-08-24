@@ -1,5 +1,5 @@
 NAME = vulkan_triangle
-PKGS = vulkan glfw3
+PKGS = vulkan glfw3 shaderc
 SRCS = $(wildcard *.cpp)
 HDRS = $(wildcard *.hpp)
 OBJS = $(SRCS:.cpp=.o)
