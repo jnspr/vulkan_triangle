@@ -58,4 +58,5 @@ private:
     void createShaders();
     void initViewportAndScissor();
     void createGraphicsPipeline();
+    void createCommandBuffer();
 };
