@@ -12,6 +12,8 @@ class Graphics {
 public:
     explicit Graphics(glfw::Window &window);
     ~Graphics();
+
+    void renderFrame();
 private:
     glfw::Window                      &m_window;
     vk::UniqueInstance                 m_instance;
