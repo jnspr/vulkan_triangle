@@ -287,7 +287,7 @@ void Graphics::createShaders() {
         .setPName("main");
     m_shaderStages[1] = vk::PipelineShaderStageCreateInfo()
         .setStage(vk::ShaderStageFlagBits::eFragment)
-        .setModule(*m_shaderModules[0])
+        .setModule(*m_shaderModules[1])
         .setPName("main");
 }
 
