@@ -22,6 +22,9 @@ private:
     vk::SurfaceFormatKHR               m_surfaceFormat;
     uint32_t                           m_queueFamilyIndex;
     vk::UniqueDevice                   m_logicalDevice;
+    vk::UniqueFence                    m_nextFrameFence;
+    vk::UniqueSemaphore                m_imageAcquireSema;
+    vk::UniqueSemaphore                m_renderFinishSema;
     vk::Queue                          m_queue;
     vk::Extent2D                       m_imageExtent;
     vk::UniqueSwapchainKHR             m_swapchain;
