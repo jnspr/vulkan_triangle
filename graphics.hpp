@@ -17,12 +17,13 @@ private:
     uint32_t                         m_queueFamilyIndex;
     vk::UniqueDevice                 m_logicalDevice;
     vk::Queue                        m_queue;
+    vk::Extent2D                     m_imageExtent;
     vk::UniqueSwapchainKHR           m_swapchain;
     std::vector<vk::UniqueImageView> m_imageViews;
 
     // Device and presentation setup
     void selectPhysicalDevice();
     void createLogicalDevice();
-    void createSwapchain(vk::Extent2D imageExtent);
+    void createSwapchain();
     void createImageViews();
 };
