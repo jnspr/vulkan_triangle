@@ -37,6 +37,8 @@ private:
     vk::Rect2D                         m_scissor;
     vk::UniquePipelineLayout           m_graphicsPipelineLayout;
     vk::UniquePipeline                 m_graphicsPipeline;
+    vk::UniqueCommandPool              m_commandPool;
+    vk::UniqueCommandBuffer            m_commandBuffer;
 
     // Preparation
     void createInstanceAndSurface();
