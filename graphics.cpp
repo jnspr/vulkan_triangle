@@ -276,6 +276,7 @@ void Graphics::createImageViews() {
     // Define a view of an image's color attachment
     auto createInfo = vk::ImageViewCreateInfo()
         .setViewType(vk::ImageViewType::e2D)
+        .setFormat(m_surfaceFormat.format)
         .setSubresourceRange(
             vk::ImageSubresourceRange()
                 .setAspectMask(vk::ImageAspectFlagBits::eColor)
