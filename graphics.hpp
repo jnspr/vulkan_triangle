@@ -23,4 +23,5 @@ private:
     void selectPhysicalDevice();
     void createLogicalDevice();
     void createSwapchain(vk::Extent2D imageExtent);
+    void createImageViews();
 };
