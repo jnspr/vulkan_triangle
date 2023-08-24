@@ -20,6 +20,7 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     // Rendering setup
     createShaders();
     initViewportAndScissor();
+    createGraphicsPipeline();
 }
 
 Graphics::~Graphics() {
@@ -301,4 +302,87 @@ void Graphics::initViewportAndScissor() {
     m_scissor = vk::Rect2D()
         .setOffset({0, 0})
         .setExtent(m_imageExtent);
+}
+
+void Graphics::createGraphicsPipeline() {
+    // Define the viewport and scissor to be dynamic
+    static const vk::DynamicState dynamicStates[] = {
+        vk::DynamicState::eViewport, vk::DynamicState::eScissor,
+    };
+    auto dynamicStateInfo = vk::PipelineDynamicStateCreateInfo()
+        .setPDynamicStates(dynamicStates)
+        .setDynamicStateCount(2);
+
+    // Define an empty vertex input state
+    auto vertexInputInfo = vk::PipelineVertexInputStateCreateInfo();
+
+    // Define input vertices to be organized as a list of triangles
+    auto inputAssemblyInfo = vk::PipelineInputAssemblyStateCreateInfo()
+        .setTopology(vk::PrimitiveTopology::eTriangleList)
+        .setPrimitiveRestartEnable(VK_FALSE);
+
+    // Define a rasterizer that fills polygons and culls back-faces
+    auto rasterizationInfo = vk::PipelineRasterizationStateCreateInfo()
+        .setDepthClampEnable(VK_FALSE)
+        .setRasterizerDiscardEnable(VK_FALSE)
+        .setPolygonMode(vk::PolygonMode::eFill)
+        .setLineWidth(1.0)
+        .setCullMode(vk::CullModeFlagBits::eBack)
+        .setFrontFace(vk::FrontFace::eClockwise)
+        .setDepthBiasEnable(VK_FALSE);
+
+    // Define multisampling to be disabled
+    auto multisampleInfo = vk::PipelineMultisampleStateCreateInfo()
+        .setSampleShadingEnable(VK_FALSE)
+        .setRasterizationSamples(vk::SampleCountFlagBits::e1)
+        .setMinSampleShading(1.0)
+        .setAlphaToCoverageEnable(VK_FALSE)
+        .setAlphaToOneEnable(VK_FALSE);
+
+    // Define color blending to be disabled
+    auto colorBlendAttachment = vk::PipelineColorBlendAttachmentState()
+        .setColorWriteMask(vk::ColorComponentFlagBits::eR | vk::ColorComponentFlagBits::eG |
+                           vk::ColorComponentFlagBits::eB | vk::ColorComponentFlagBits::eA)
+        .setBlendEnable(VK_FALSE)
+        .setSrcColorBlendFactor(vk::BlendFactor::eOne)
+        .setDstColorBlendFactor(vk::BlendFactor::eZero)
+        .setColorBlendOp(vk::BlendOp::eAdd)
+        .setSrcAlphaBlendFactor(vk::BlendFactor::eOne)
+        .setDstAlphaBlendFactor(vk::BlendFactor::eZero)
+        .setAlphaBlendOp(vk::BlendOp::eAdd);
+    auto colorBlendInfo = vk::PipelineColorBlendStateCreateInfo()
+        .setLogicOpEnable(VK_FALSE)
+        .setLogicOp(vk::LogicOp::eCopy)
+        .setPAttachments(&colorBlendAttachment)
+        .setAttachmentCount(1)
+        .setBlendConstants({0.0f, 0.0f, 0.0f, 0.0f});
+
+    // Define the viewport's initial state
+    auto viewportInfo = vk::PipelineViewportStateCreateInfo()
+        .setPViewports(&m_viewport)
+        .setViewportCount(1)
+        .setPScissors(&m_scissor)
+        .setScissorCount(1);
+
+    // Create an empty pipeline layout
+    m_graphicsPipelineLayout = m_logicalDevice->createPipelineLayoutUnique(
+        vk::PipelineLayoutCreateInfo()
+    );
+
+    m_graphicsPipeline = m_logicalDevice->createGraphicsPipelineUnique(
+        nullptr,
+        vk::GraphicsPipelineCreateInfo()
+            .setRenderPass(*m_renderPass)
+            .setPStages(m_shaderStages)
+            .setStageCount(2)
+            .setPDynamicState(&dynamicStateInfo)
+            .setPVertexInputState(&vertexInputInfo)
+            .setPInputAssemblyState(&inputAssemblyInfo)
+            .setPRasterizationState(&rasterizationInfo)
+            .setPMultisampleState(&multisampleInfo)
+            .setPColorBlendState(&colorBlendInfo)
+            .setPViewportState(&viewportInfo)
+            .setLayout(*m_graphicsPipelineLayout)
+            .setSubpass(0)
+    ).value;
 }
