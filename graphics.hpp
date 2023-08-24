@@ -35,6 +35,8 @@ private:
     vk::PipelineShaderStageCreateInfo  m_shaderStages[2];
     vk::Viewport                       m_viewport;
     vk::Rect2D                         m_scissor;
+    vk::UniquePipelineLayout           m_graphicsPipelineLayout;
+    vk::UniquePipeline                 m_graphicsPipeline;
 
     // Preparation
     void createInstanceAndSurface();
