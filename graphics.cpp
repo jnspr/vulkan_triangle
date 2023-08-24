@@ -23,7 +23,8 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
 }
 
 Graphics::~Graphics() {
-    m_logicalDevice->waitIdle();
+    if (m_logicalDevice)
+        m_logicalDevice->waitIdle();
 }
 
 void Graphics::selectPhysicalDevice() {
