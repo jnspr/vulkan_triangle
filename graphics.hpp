@@ -59,4 +59,7 @@ private:
     void initViewportAndScissor();
     void createGraphicsPipeline();
     void createCommandBuffer();
+
+    // Rendering
+    void recordCommandBuffer(uint32_t imageIndex);
 };
