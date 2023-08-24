@@ -4,16 +4,8 @@
 #include <stdexcept>
 
 Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0xffffffff) {
-    // Create instance with extensions for presenting to window surface
-    auto extensions = glfw::getRequiredInstanceExtensions();
-    m_instance = vk::createInstanceUnique(
-        vk::InstanceCreateInfo()
-            .setPEnabledExtensionNames(extensions)
-    );
-
-    // Create surface for presenting
-    m_surface = vk::UniqueSurfaceKHR(window.createSurface(*m_instance), *m_instance);
-
+    // Preparation
+    createInstanceAndSurface();
     loadAndCompileShaders();
 
     // Setup devices and presentation
@@ -28,6 +20,18 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
 Graphics::~Graphics() {
     if (m_logicalDevice)
         m_logicalDevice->waitIdle();
+}
+
+void Graphics::createInstanceAndSurface() {
+    // Create instance with extensions for presenting to window surface
+    auto extensions = glfw::getRequiredInstanceExtensions();
+    m_instance = vk::createInstanceUnique(
+        vk::InstanceCreateInfo()
+            .setPEnabledExtensionNames(extensions)
+    );
+
+    // Create surface for presenting
+    m_surface = vk::UniqueSurfaceKHR(m_window.createSurface(*m_instance), *m_instance);
 }
 
 SpirvCode Graphics::loadAndCompileShader(shaderc::Compiler &compiler, shaderc_shader_kind kind, const char *path) {
