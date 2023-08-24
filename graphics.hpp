@@ -33,6 +33,8 @@ private:
     std::vector<vk::UniqueFramebuffer> m_framebuffers;
     vk::UniqueShaderModule             m_shaderModules[2];
     vk::PipelineShaderStageCreateInfo  m_shaderStages[2];
+    vk::Viewport                       m_viewport;
+    vk::Rect2D                         m_scissor;
 
     // Preparation
     void createInstanceAndSurface();
