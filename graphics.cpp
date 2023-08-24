@@ -19,6 +19,7 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     createSwapchain();
     createRenderPass();
     createImageViews();
+    createFramebuffers();
 }
 
 Graphics::~Graphics() {
@@ -168,6 +169,27 @@ void Graphics::createImageViews() {
     for (auto image : images) {
         m_imageViews.push_back(
             m_logicalDevice->createImageViewUnique(createInfo.setImage(image))
+        );
+    }
+}
+
+void Graphics::createFramebuffers() {
+    // Define a framebuffer of the previously set image extent with a color attachment
+    auto createInfo = vk::FramebufferCreateInfo()
+        .setRenderPass(*m_renderPass)
+        .setAttachmentCount(1)
+        .setWidth(m_imageExtent.width)
+        .setHeight(m_imageExtent.height)
+        .setLayers(1);
+
+    // Destroy existing framebuffers and reserve space for each new handle
+    m_framebuffers.clear();
+    m_framebuffers.reserve(m_imageViews.size());
+
+    // Create a framebuffer for each image view
+    for (auto &imageView : m_imageViews) {
+        m_framebuffers.push_back(
+            m_logicalDevice->createFramebufferUnique(createInfo.setPAttachments(&imageView.get()))
         );
     }
 }
