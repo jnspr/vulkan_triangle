@@ -17,6 +17,7 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     selectPhysicalDevice();
     createLogicalDevice();
     createSwapchain();
+    createRenderPass();
     createImageViews();
 }
 
@@ -112,6 +113,36 @@ void Graphics::createSwapchain() {
             .setImageExtent(m_imageExtent)
             .setImageArrayLayers(1)
             .setMinImageCount(minImageCount)
+    );
+}
+
+void Graphics::createRenderPass() {
+    // Define the color attachment
+    auto colorDescription = vk::AttachmentDescription()
+        .setFormat(m_surfaceFormat.format)
+        .setSamples(vk::SampleCountFlagBits::e1)
+        .setLoadOp(vk::AttachmentLoadOp::eClear)
+        .setStoreOp(vk::AttachmentStoreOp::eStore)
+        .setStencilLoadOp(vk::AttachmentLoadOp::eDontCare)
+        .setStencilStoreOp(vk::AttachmentStoreOp::eDontCare)
+        .setInitialLayout(vk::ImageLayout::eUndefined)
+        .setFinalLayout(vk::ImageLayout::ePresentSrcKHR);
+
+    // Define a single subpass which reference the color attachment
+    auto colorReference = vk::AttachmentReference()
+        .setAttachment(0)
+        .setLayout(vk::ImageLayout::eColorAttachmentOptimal);
+    auto subpass = vk::SubpassDescription()
+        .setPipelineBindPoint(vk::PipelineBindPoint::eGraphics)
+        .setPColorAttachments(&colorReference)
+        .setColorAttachmentCount(1);
+
+    m_renderPass = m_logicalDevice->createRenderPassUnique(
+        vk::RenderPassCreateInfo()
+            .setPAttachments(&colorDescription)
+            .setAttachmentCount(1)
+            .setPSubpasses(&subpass)
+            .setSubpassCount(1)
     );
 }
 
