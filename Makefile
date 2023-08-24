@@ -5,7 +5,14 @@ HDRS = $(wildcard *.hpp)
 OBJS = $(SRCS:.cpp=.o)
 
 # Compiler settings
-CFLAGS += -Ofast -DGLFW_INCLUDE_NONE -g -DENABLE_VALIDATION
+CFLAGS += -DGLFW_INCLUDE_NONE
+
+# Build in release mode by default
+ifeq ($(BUILD_MODE),debug)
+	CFLAGS += -g -DENABLE_VALIDATION
+else
+	CFLAGS += -Ofast -DNDEBUG
+endif
 
 # Dependencies via pkg-config
 CFLAGS += $(shell pkg-config $(PKGS) --cflags)
