@@ -21,6 +21,7 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     createShaders();
     initViewportAndScissor();
     createGraphicsPipeline();
+    createCommandBuffer();
 }
 
 Graphics::~Graphics() {
@@ -385,4 +386,26 @@ void Graphics::createGraphicsPipeline() {
             .setLayout(*m_graphicsPipelineLayout)
             .setSubpass(0)
     ).value;
+}
+
+void Graphics::createCommandBuffer() {
+    // Create a command pool
+    m_commandPool = m_logicalDevice->createCommandPoolUnique(
+        vk::CommandPoolCreateInfo()
+            .setFlags(vk::CommandPoolCreateFlagBits::eResetCommandBuffer)
+            .setQueueFamilyIndex(m_queueFamilyIndex)
+    );
+
+    // Allocate a single command buffer
+    auto commandBuffers = m_logicalDevice->allocateCommandBuffersUnique(
+        vk::CommandBufferAllocateInfo()
+            .setCommandPool(*m_commandPool)
+            .setLevel(vk::CommandBufferLevel::ePrimary)
+            .setCommandBufferCount(1)
+    );
+
+    // Check if the allocation succeeded and move the buffer into `m_commandBuffer`
+    if (commandBuffers.empty())
+        throw std::runtime_error("Unable to allocate command buffer");
+    m_commandBuffer = std::move(commandBuffers[0]);
 }
