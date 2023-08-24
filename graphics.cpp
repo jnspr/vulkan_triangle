@@ -10,14 +10,13 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
             .setPEnabledExtensionNames(extensions)
     );
 
-    // Create surface for presenting and get its current size
+    // Create surface for presenting
     m_surface = vk::UniqueSurfaceKHR(window.createSurface(*m_instance), *m_instance);
-    auto size = window.getFramebufferSize();
 
     // Setup devices and presentation
     selectPhysicalDevice();
     createLogicalDevice();
-    createSwapchain(vk::Extent2D(std::get<0>(size), std::get<1>(size)));
+    createSwapchain();
     createImageViews();
 }
 
@@ -76,14 +75,16 @@ void Graphics::createLogicalDevice() {
     m_queue = m_logicalDevice->getQueue(m_queueFamilyIndex, 0);
 }
 
-void Graphics::createSwapchain(vk::Extent2D imageExtent) {
+void Graphics::createSwapchain() {
     auto capabilities = m_physicalDevice.getSurfaceCapabilitiesKHR(*m_surface);
+    auto extentTuple = m_window.getFramebufferSize();
+    m_imageExtent = vk::Extent2D(std::get<0>(extentTuple), std::get<1>(extentTuple));
 
     // Check if the image extent is within the allowed range
-    if (imageExtent.width  < capabilities.minImageExtent.width  ||
-        imageExtent.height < capabilities.minImageExtent.height ||
-        imageExtent.width  > capabilities.maxImageExtent.width  ||
-        imageExtent.height > capabilities.maxImageExtent.height)
+    if (m_imageExtent.width  < capabilities.minImageExtent.width  ||
+        m_imageExtent.height < capabilities.minImageExtent.height ||
+        m_imageExtent.width  > capabilities.maxImageExtent.width  ||
+        m_imageExtent.height > capabilities.maxImageExtent.height)
     {
         throw std::runtime_error("Unable create swapchain with given image extent");
     }
@@ -104,7 +105,7 @@ void Graphics::createSwapchain(vk::Extent2D imageExtent) {
             .setImageFormat(m_surfaceFormat.format)
             .setImageColorSpace(m_surfaceFormat.colorSpace)
             .setImageUsage(vk::ImageUsageFlagBits::eColorAttachment)
-            .setImageExtent(imageExtent)
+            .setImageExtent(m_imageExtent)
             .setImageArrayLayers(1)
             .setMinImageCount(minImageCount)
     );
