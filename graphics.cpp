@@ -160,9 +160,8 @@ void Graphics::createImageViews() {
                 .setLayerCount(1)
         );
 
-    // Destroy existing image views and reserve space for each new view handle
+    // Reserve space for each new image view handle
     auto images = m_logicalDevice->getSwapchainImagesKHR(*m_swapchain);
-    m_imageViews.clear();
     m_imageViews.reserve(images.size());
 
     // Create a view for each image in the swapchain
@@ -182,8 +181,7 @@ void Graphics::createFramebuffers() {
         .setHeight(m_imageExtent.height)
         .setLayers(1);
 
-    // Destroy existing framebuffers and reserve space for each new handle
-    m_framebuffers.clear();
+    // Reserve space for each new framebuffer
     m_framebuffers.reserve(m_imageViews.size());
 
     // Create a framebuffer for each image view
