@@ -4,6 +4,10 @@
 #include <cstdint>
 #include <stdexcept>
 
+#ifdef ENABLE_VALIDATION
+#include <iostream>
+#endif
+
 Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0xffffffff) {
     // Preparation
     createInstanceAndSurface();
@@ -77,12 +81,42 @@ void Graphics::renderFrame() {
 }
 
 void Graphics::createInstanceAndSurface() {
-    // Create instance with extensions for presenting to window surface
+    auto layers = std::vector<const char *>();
+
+    // Get required extensions for presenting to a window
     auto extensions = glfw::getRequiredInstanceExtensions();
+
+#ifdef ENABLE_VALIDATION
+    // Optionally enable validation layer and debug callback extension
+    layers.push_back("VK_LAYER_KHRONOS_validation");
+    extensions.push_back("VK_EXT_debug_utils");
+#endif
+
+    // Create instance with the collected extensions and layers
     m_instance = vk::createInstanceUnique(
         vk::InstanceCreateInfo()
+            .setPEnabledLayerNames(layers)
             .setPEnabledExtensionNames(extensions)
     );
+
+#ifdef ENABLE_VALIDATION
+    // Optionally create a dynamic dispatch for the debug extension and a messenger to the callback function
+    m_dispatch = vk::DispatchLoaderDynamic(*m_instance, glfw::getInstanceProcAddress);
+    m_messenger = m_instance->createDebugUtilsMessengerEXTUnique(
+        vk::DebugUtilsMessengerCreateInfoEXT()
+            .setMessageSeverity(vk::DebugUtilsMessageSeverityFlagBitsEXT::eInfo |
+                                vk::DebugUtilsMessageSeverityFlagBitsEXT::eError |
+                                vk::DebugUtilsMessageSeverityFlagBitsEXT::eVerbose |
+                                vk::DebugUtilsMessageSeverityFlagBitsEXT::eWarning)
+            .setMessageType(vk::DebugUtilsMessageTypeFlagBitsEXT::eGeneral |
+                            vk::DebugUtilsMessageTypeFlagBitsEXT::eValidation |
+                            vk::DebugUtilsMessageTypeFlagBitsEXT::ePerformance |
+                            vk::DebugUtilsMessageTypeFlagBitsEXT::eDeviceAddressBinding)
+            .setPfnUserCallback(Graphics::debugCallback),
+        nullptr,
+        m_dispatch
+    );
+#endif
 
     // Create surface for presenting
     m_surface = vk::UniqueSurfaceKHR(m_window.createSurface(*m_instance), *m_instance);
@@ -490,3 +524,15 @@ void Graphics::recordCommandBuffer(uint32_t imageIndex) {
     m_commandBuffer->endRenderPass();
     m_commandBuffer->end();
 }
+
+#ifdef ENABLE_VALIDATION
+VKAPI_ATTR VkBool32 VKAPI_CALL Graphics::debugCallback(
+    VkDebugUtilsMessageSeverityFlagBitsEXT      messageSeverity,
+    VkDebugUtilsMessageTypeFlagsEXT             messageType,
+    const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
+    void                                       *pUserData
+) {
+    std::cerr << "[VK_EXT_debug_utils] " << pCallbackData->pMessage << std::endl;
+    return VK_FALSE;
+}
+#endif
