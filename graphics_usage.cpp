@@ -46,6 +46,29 @@ void Graphics::renderFrame() {
     );
 }
 
+void Graphics::handleResize() {
+    // Wait for pending operations to finish
+    m_logicalDevice->waitIdle();
+
+    // Destroy the graphics pipeline
+    m_graphicsPipelineLayout.reset();
+    m_graphicsPipeline.reset();
+
+    // Destroy the swapchain and resources that depend on it
+    m_framebuffers.clear();
+    m_imageViews.clear();
+    m_swapchain.reset();
+
+    // Re-create the swapchain and resources that depend on it
+    createSwapchain();
+    createImageViews();
+    createFramebuffers();
+
+    // Re-create the graphics pipeline
+    initViewportAndScissor();
+    createGraphicsPipeline();
+}
+
 void Graphics::recordCommandBuffer(uint32_t imageIndex) {
     // Reset the buffer and start recording
     m_commandBuffer->reset();
