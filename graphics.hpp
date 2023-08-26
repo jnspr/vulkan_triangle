@@ -66,7 +66,7 @@ private:
     void createGraphicsPipeline();
     void createCommandBuffer();
 
-    // Rendering
+    // Object usage
     void recordCommandBuffer(uint32_t imageIndex);
 
     // Callback for debug messages
