@@ -14,6 +14,7 @@ public:
     ~Graphics();
 
     void renderFrame();
+    void handleResize();
 private:
     glfw::Window                      &m_window;
     vk::UniqueInstance                 m_instance;
