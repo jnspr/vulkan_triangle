@@ -102,3 +102,12 @@ void Graphics::recordCommandBuffer(uint32_t imageIndex) {
     m_commandBuffer->endRenderPass();
     m_commandBuffer->end();
 }
+
+uint32_t Graphics::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags flags) {
+    for (uint32_t index = 0; index < m_memoryProperties.memoryTypeCount; index++) {
+        if (typeFilter & (1 << index) && m_memoryProperties.memoryTypes[index].propertyFlags & flags) {
+            return index;
+        }
+    }
+    throw std::runtime_error("Unable to find memory type");
+}
