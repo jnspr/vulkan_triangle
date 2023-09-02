@@ -27,14 +27,18 @@ all: $(NAME)
 # Rule for cleaning build artifacts and results
 clean:
 	find . -type f -name '*.o' -delete
-	rm -f vulkan_triangle
+	rm -f pch.hpp.gch vulkan_triangle
 
 # Rule for building the $(NAME) executable
-$(NAME): $(OBJS)
+$(NAME): pch.hpp.gch $(OBJS)
 	$(CXX) -o $(NAME) $(OBJS) $(LIBS)
 
 # Rule for building object files
-%.o: %.cpp $(HDRS)
-	$(CXX) $(CFLAGS) -o $@ -c $<
+%.o: %.cpp $(HDRS) pch.hpp.gch
+	$(CXX) $(CFLAGS) -include pch.hpp -o $@ -c $<
+
+# Rule for building precompiled header
+pch.hpp.gch:
+	$(CXX) $(CFLAGS) -o pch.hpp.gch pch.hpp
 
 .PHONY: all clean
