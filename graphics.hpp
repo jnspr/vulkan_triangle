@@ -4,6 +4,11 @@
 
 #include <vector>
 
+struct Vertex {
+    glm::vec3 position;
+    glm::vec2 color;
+};
+
 using SpirvCode = std::vector<uint32_t>;
 
 class Graphics {
