@@ -1,3 +1,6 @@
 [submodule "external/glfwpp"]
 	path = external/glfwpp
 	url = https://github.com/janekb04/glfwpp
+[submodule "external/glm"]
+	path = external/glm
+	url = https://github.com/g-truc/glm
