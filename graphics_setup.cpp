@@ -26,6 +26,7 @@ Graphics::Graphics(glfw::Window &window): m_window(window), m_queueFamilyIndex(0
     createShaders();
     initViewportAndScissor();
     createGraphicsPipeline();
+    createVertexBuffer();
     createCommandBuffer();
 }
 
