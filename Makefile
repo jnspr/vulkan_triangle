@@ -5,7 +5,7 @@ HDRS = $(wildcard *.hpp)
 OBJS = $(SRCS:.cpp=.o)
 
 # Compiler settings
-CFLAGS += -DGLFW_INCLUDE_NONE
+CFLAGS += -DGLFW_INCLUDE_NONE -std=c++17
 
 # Build in release mode by default
 ifeq ($(BUILD_MODE),debug)
