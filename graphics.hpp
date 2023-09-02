@@ -100,6 +100,7 @@ private:
 
     // Object usage
     void recordCommandBuffer(uint32_t imageIndex);
+    uint32_t findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags flags);
 
     // Callback for debug messages
 #ifdef ENABLE_VALIDATION
