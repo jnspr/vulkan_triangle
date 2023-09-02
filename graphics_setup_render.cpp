@@ -123,6 +123,37 @@ void Graphics::createGraphicsPipeline() {
     ).value;
 }
 
+void Graphics::createVertexBuffer() {
+    const size_t bufferSize = k_vertexData.size() * sizeof(Vertex);
+
+    // Create a vertex buffer and get its requirements
+    m_vertexBuffer = m_logicalDevice->createBufferUnique(vk::BufferCreateInfo()
+        .setUsage(vk::BufferUsageFlagBits::eVertexBuffer)
+        .setSharingMode(vk::SharingMode::eExclusive)
+        .setSize(bufferSize));
+    auto requirements = m_logicalDevice->getBufferMemoryRequirements(*m_vertexBuffer);
+    auto actualBufferSize = std::max(bufferSize, requirements.size);
+
+    // Allocate host-visible and host-coherent memory for the buffer
+    m_vertexMemory = m_logicalDevice->allocateMemoryUnique(vk::MemoryAllocateInfo()
+        .setAllocationSize(actualBufferSize)
+        .setMemoryTypeIndex(
+            findMemoryType(requirements.memoryTypeBits,
+                vk::MemoryPropertyFlagBits::eHostVisible |
+                vk::MemoryPropertyFlagBits::eHostCoherent)
+        ));
+    m_logicalDevice->bindBufferMemory(*m_vertexBuffer, *m_vertexMemory, 0);
+
+    // Map the buffer's memory, copy over the vertices and unmap it
+    void *data;
+    vk::resultCheck(
+        m_logicalDevice->mapMemory(*m_vertexMemory, 0, actualBufferSize, vk::MemoryMapFlags(), &data),
+        "vk::Device::mapMemory"
+    );
+    memcpy(data, k_vertexData.data(), bufferSize);
+    m_logicalDevice->unmapMemory(*m_vertexMemory);
+}
+
 void Graphics::createCommandBuffer() {
     // Create a command pool
     m_commandPool = m_logicalDevice->createCommandPoolUnique(
