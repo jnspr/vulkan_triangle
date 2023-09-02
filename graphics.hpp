@@ -55,6 +55,7 @@ private:
     vk::PhysicalDevice                 m_physicalDevice;
     vk::SurfaceFormatKHR               m_surfaceFormat;
     uint32_t                           m_queueFamilyIndex;
+    vk::PhysicalDeviceMemoryProperties m_memoryProperties;
     vk::UniqueDevice                   m_logicalDevice;
     vk::UniqueFence                    m_nextFrameFence;
     vk::UniqueSemaphore                m_imageAcquireSema;
