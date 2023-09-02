@@ -19,7 +19,7 @@ CFLAGS += $(shell pkg-config $(PKGS) --cflags)
 LIBS += $(shell pkg-config $(PKGS) --libs)
 
 # Dependencies via submodules
-CFLAGS += -I external/glfwpp/include
+CFLAGS += -I external/glfwpp/include -I external/glm
 
 # Rule for building all components
 all: $(NAME)
