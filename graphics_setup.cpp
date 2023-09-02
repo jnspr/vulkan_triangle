@@ -125,3 +125,9 @@ VKAPI_ATTR VkBool32 VKAPI_CALL Graphics::debugCallback(
     return VK_FALSE;
 }
 #endif
+
+std::vector<Vertex> Graphics::k_vertexData = {
+    {{ 0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+    {{ 0.5f,  0.5f}, {0.0f, 1.0f, 0.0f}},
+    {{-0.5f,  0.5f}, {0.0f, 0.0f, 1.0f}}
+};
