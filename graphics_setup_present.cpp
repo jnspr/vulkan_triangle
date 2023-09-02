@@ -27,6 +27,7 @@ void Graphics::selectPhysicalDevice() {
             m_physicalDevice = device;
             m_surfaceFormat = formats[0];
             m_queueFamilyIndex = index;
+            m_memoryProperties = m_physicalDevice.getMemoryProperties();
             return;
         }
     }
