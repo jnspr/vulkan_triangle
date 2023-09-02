@@ -2,11 +2,34 @@
 
 #include "pch.hpp"
 
+#include <array>
 #include <vector>
 
 struct Vertex {
     glm::vec3 position;
     glm::vec2 color;
+
+    static inline auto getBindingDescription() {
+        return vk::VertexInputBindingDescription()
+            .setBinding(0)
+            .setStride(sizeof(Vertex))
+            .setInputRate(vk::VertexInputRate::eVertex);
+    }
+
+    static inline auto getAttributeDescriptions() {
+        return std::array<vk::VertexInputAttributeDescription, 2> {
+            vk::VertexInputAttributeDescription()
+                .setBinding(0)
+                .setLocation(0)
+                .setFormat(vk::Format::eR32G32Sfloat)
+                .setOffset(offsetof(Vertex, position)),
+            vk::VertexInputAttributeDescription()
+                .setBinding(0)
+                .setLocation(1)
+                .setFormat(vk::Format::eR32G32B32Sfloat)
+                .setOffset(offsetof(Vertex, color))
+        };
+    }
 };
 
 using SpirvCode = std::vector<uint32_t>;
