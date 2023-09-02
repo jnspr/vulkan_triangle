@@ -6,8 +6,8 @@
 #include <vector>
 
 struct Vertex {
-    glm::vec3 position;
-    glm::vec2 color;
+    glm::vec2 position;
+    glm::vec3 color;
 
     static inline auto getBindingDescription() {
         return vk::VertexInputBindingDescription()
