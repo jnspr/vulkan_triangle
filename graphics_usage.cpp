@@ -95,7 +95,8 @@ void Graphics::recordCommandBuffer(uint32_t imageIndex) {
     m_commandBuffer->setScissor(0, 1, &m_scissor);
 
     // Draw the triangle
-    m_commandBuffer->draw(3, 1, 0, 0);
+    m_commandBuffer->bindVertexBuffers(0, {*m_vertexBuffer}, {0});
+    m_commandBuffer->draw(k_vertexData.size(), 1, 0, 0);
 
     // End the render pass and recording
     m_commandBuffer->endRenderPass();
