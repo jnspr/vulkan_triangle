@@ -42,6 +42,7 @@ public:
     void renderFrame();
     void handleResize();
 private:
+    static std::vector<Vertex>         k_vertexData;
     glfw::Window                      &m_window;
     vk::UniqueInstance                 m_instance;
 #ifdef ENABLE_VALIDATION
