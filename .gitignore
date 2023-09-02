@@ -4,5 +4,6 @@
 
 # Build artifacts and results
 /vulkan_triangle
+/pch.hpp.gch
 *.o
 
