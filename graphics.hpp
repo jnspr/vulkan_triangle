@@ -3,7 +3,6 @@
 #include "pch.hpp"
 
 #include <vector>
-#include <utility>
 
 using SpirvCode = std::vector<uint32_t>;
 
