@@ -1,11 +1,9 @@
 #pragma once
 
+#include "pch.hpp"
+
 #include <vector>
 #include <utility>
-#include <glm/glm.hpp>
-#include <vulkan/vulkan.hpp>
-#include <glfwpp/glfwpp.h>
-#include <shaderc/shaderc.hpp>
 
 using SpirvCode = std::vector<uint32_t>;
 
