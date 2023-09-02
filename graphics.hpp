@@ -70,6 +70,8 @@ private:
     vk::Rect2D                         m_scissor;
     vk::UniquePipelineLayout           m_graphicsPipelineLayout;
     vk::UniquePipeline                 m_graphicsPipeline;
+    vk::UniqueBuffer                   m_vertexBuffer;
+    vk::UniqueDeviceMemory             m_vertexMemory;
     vk::UniqueCommandPool              m_commandPool;
     vk::UniqueCommandBuffer            m_commandBuffer;
 
