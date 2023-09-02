@@ -93,6 +93,7 @@ private:
     void createShaders();
     void initViewportAndScissor();
     void createGraphicsPipeline();
+    void createVertexBuffer();
     void createCommandBuffer();
 
     // Object usage
