@@ -1,9 +1,9 @@
 #pragma once
 
 #include "graphics.hpp"
+#include "pch.hpp"
 
 #include <utility>
-#include <glfwpp/glfwpp.h>
 
 class Application {
 public:
