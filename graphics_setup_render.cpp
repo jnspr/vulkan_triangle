@@ -44,8 +44,13 @@ void Graphics::createGraphicsPipeline() {
         .setPDynamicStates(dynamicStates)
         .setDynamicStateCount(2);
 
-    // Define an empty vertex input state
-    auto vertexInputInfo = vk::PipelineVertexInputStateCreateInfo();
+    // Define a vertex input state based on the vertex structure
+    auto vertexBindingDescription = Vertex::getBindingDescription();
+    auto vertexAttributeDescriptions = Vertex::getAttributeDescriptions();
+    auto vertexInputInfo = vk::PipelineVertexInputStateCreateInfo()
+        .setPVertexBindingDescriptions(&vertexBindingDescription)
+        .setVertexBindingDescriptionCount(1)
+        .setVertexAttributeDescriptions(vertexAttributeDescriptions);
 
     // Define input vertices to be organized as a list of triangles
     auto inputAssemblyInfo = vk::PipelineInputAssemblyStateCreateInfo()
